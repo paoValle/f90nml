@@ -685,6 +685,12 @@ class Namelist(OrderedDict):
                 # Repeated group names are stored as cogroups, so the patch is
                 #   applied to the target's corresponding group.
                 grp = _cogroup_basename(key)
+
+                # A plain group of the target is promoted first, or it would
+                #   be left beside an empty duplicate of the patched one.
+                if grp in self and grp not in self._cogroups:
+                    self.create_cogroup(grp)
+
                 index = nml_patch._cogroups[grp].index(key)
                 while index >= len(self._cogroups.get(grp, [])):
                     self.add_cogroup(grp, Namelist())

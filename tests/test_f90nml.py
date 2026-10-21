@@ -848,6 +848,15 @@ class Test(unittest.TestCase):
         cogrp_nml.patch(cg_patch)
         self.assertEqual([{'x': 3}, {'x': 4}], cogrp_nml['cogroup_nml'])
 
+    def test_cogroup_patch_plain_group(self):
+        # A one-group cogroup patch over a plain group of the target updates
+        #   it, rather than leaving it beside an empty duplicate.
+        nml = f90nml.reads('&foo x = 1 /')
+        cg_patch = f90nml.reads('&foo x = 2 /')
+        cg_patch.create_cogroup('foo')
+        nml.patch(cg_patch)
+        self.assertEqual([{'x': 2}], nml['foo'])
+
     def test_cogroup_patch_nml(self):
         cogrp_nml = f90nml.read('cogroup.nml')
         cg_patch = f90nml.Namelist(cogroup_nml={'x': 3})
